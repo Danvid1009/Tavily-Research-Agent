@@ -2,7 +2,7 @@
 
 An AI-powered tool that automatically researches, analyzes, and compares AI policy documents from different countries/regions to help policymakers, researchers, and legal professionals understand how different jurisdictions approach AI regulation.
 
-## 🎯 Main Purpose
+## Main Purpose
 
 AgentResearch helps users understand AI policy differences across jurisdictions by:
 - Automatically searching for relevant policy documents
@@ -10,29 +10,29 @@ AgentResearch helps users understand AI policy differences across jurisdictions 
 - Comparing regulatory approaches across regions
 - Generating actionable insights and recommendations
 
-## 🤖 The 4-Agent Workflow
+## Agent Workflow (4 Agents)
 
-### 🔍 Search Agent
+### Search Agent
 - Uses the Tavily API to search for AI policy documents
 - Searches for legal documents, regulations, and policy frameworks
 - Focuses on specific regions (EU, US, etc.) based on your query
 
-### 📄 Extract Agent
+### Extract Agent
 - Uses Ollama (local LLM) to extract key legal clauses from the documents
 - Identifies important regulatory provisions, requirements, and restrictions
 - Parses complex legal language into structured data
 
-### ⚖️ Compare Agent
+### Compare Agent
 - Analyzes and compares the extracted clauses across different jurisdictions
 - Identifies similarities, differences, and gaps in regulation
 - Highlights key policy differences and their implications
 
-### 📝 Summarize Agent
+### Summarize Agent
 - Generates executive summaries of the comparisons
 - Creates actionable insights for policymakers
 - Provides recommendations based on the analysis
 
-## 🚀 Example Use Case
+## Example Use Case
 
 **Query:** "Compare AI safety regulations in EU vs US"
 
@@ -46,7 +46,7 @@ AgentResearch helps users understand AI policy differences across jurisdictions 
    - Different definitions of "AI system"
    - Varying enforcement penalties
 
-## 🏗️ Technical Architecture
+## Architecture
 
 - **Frontend:** Modern web interface for submitting queries and viewing results
 - **Backend:** FastAPI with async processing
@@ -54,7 +54,7 @@ AgentResearch helps users understand AI policy differences across jurisdictions 
 - **Database:** MongoDB Atlas for storing research results
 - **Workflow:** LangGraph for orchestrating the 4 agents
 
-## 📋 Prerequisites
+## Prerequisites
 
 1. **Python 3.9+**
 2. **Ollama** installed and running locally
@@ -139,21 +139,21 @@ OLLAMA_MODEL=llama2
 ### Tavily Search Configuration
 The search agent is configured to focus on academic and legal sources. You can modify search parameters in `app/agents/search_agent.py`.
 
-## 🚀 Usage
+## Usage
 
 1. **Submit a Query:** Enter your research question in the web interface
 2. **Monitor Progress:** Watch the real-time progress of the 4-agent workflow
 3. **View Results:** Access detailed analysis, comparisons, and recommendations
 4. **Export Results:** Download reports in various formats
 
-## 🔍 API Endpoints
+## API Endpoints
 
 - `POST /api/research` - Submit a new research query
 - `GET /api/research/{id}` - Get research results
 - `GET /api/research` - List all research projects
 - `DELETE /api/research/{id}` - Delete a research project
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -161,11 +161,6 @@ The search agent is configured to focus on academic and legal sources. You can m
 4. Add tests
 5. Submit a pull request
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🆘 Support
-
-For support and questions, please open an issue in the GitHub repository.
- 
