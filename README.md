@@ -1,6 +1,6 @@
-# AgentResearch: AI Policy Analysis Tool
+# AgentResearch: Tavily AI Policy Analysis Tool
 
-An AI-powered tool that automatically researches, analyzes, and compares AI policy documents from different countries/regions to help policymakers, researchers, and legal professionals understand how different jurisdictions approach AI regulation.
+A Tavily AI-powered tool that automatically researches, analyzes, and compares AI policy documents from different countries/regions to help policymakers, researchers, and legal professionals understand how different jurisdictions approach AI regulation.
 
 ## Main Purpose
 
