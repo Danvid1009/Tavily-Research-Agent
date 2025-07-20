@@ -101,13 +101,13 @@ Tavily_Agent/
 ├── app/
 │   ├── __init__.py
 │   ├── main.py                 # FastAPI application entry point
-│   ├── config.py              # Configuration settings
+│   ├── config.py              # Configuration setings
 │   ├── database.py            # MongoDB connection
 │   ├── models/                # Pydantic models
 │   │   ├── __init__.py
 │   │   ├── query.py
 │   │   └── response.py
-│   ├── agents/                # The 4 AI agents
+│   ├── agents/                # 4 AI agents
 │   │   ├── __init__.py
 │   │   ├── search_agent.py
 │   │   ├── extract_agent.py
@@ -124,7 +124,7 @@ Tavily_Agent/
 │       ├── js/
 │       └── index.html
 ├── requirements.txt
-├── .env.example
+├── .env.example      # recrate using pyour own keys 
 └── README.md
 ```
 
