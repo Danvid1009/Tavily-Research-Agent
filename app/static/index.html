@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgentResearch - AI Policy Analysis Tool</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-section {
+            display: none;
+        }
+
+        .progress-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .agent-progress {
+            margin-bottom: 20px;
+        }
+
+        .agent-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .agent-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 18px;
+            color: white;
+        }
+
+        .search-icon { background: #4CAF50; }
+        .extract-icon { background: #2196F3; }
+        .compare-icon { background: #FF9800; }
+        .summarize-icon { background: #9C27B0; }
+
+        .agent-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e1e5e9;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #45a049);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-pending { background: #ffd700; color: #333; }
+        .status-processing { background: #2196F3; color: white; }
+        .status-completed { background: #4CAF50; color: white; }
+        .status-failed { background: #f44336; color: white; }
+
+        .results-section {
+            display: none;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .result-section {
+            margin-bottom: 30px;
+        }
+
+        .result-section h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #e1e5e9;
+            padding-bottom: 10px;
+        }
+
+        .document-item, .clause-item, .comparison-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .document-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .document-meta {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .clause-text {
+            font-style: italic;
+            color: #555;
+            margin-bottom: 5px;
+        }
+
+        .clause-meta {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .comparison-topic {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .comparison-details {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .export-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .export-btn:hover {
+            background: #218838;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #f5c6cb;
+        }
+
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-robot"></i> AgentResearch</h1>
+            <p>AI-powered tool for researching and comparing AI policy documents across jurisdictions</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Query Form -->
+            <div class="card">
+                <h2><i class="fas fa-search"></i> Submit Research Query</h2>
+                <form id="researchForm">
+                    <div class="form-group">
+                        <label for="query">Research Question</label>
+                        <textarea id="query" class="form-control" rows="4" placeholder="e.g., Compare AI safety regulations in EU vs US" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="regions">Regions (optional)</label>
+                        <input type="text" id="regions" class="form-control" placeholder="e.g., EU, US, UK (comma-separated)">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="documentTypes">Document Types (optional)</label>
+                        <input type="text" id="documentTypes" class="form-control" placeholder="e.g., legislation, policy_framework, white_paper">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="maxDocuments">Maximum Documents</label>
+                        <input type="number" id="maxDocuments" class="form-control" value="10" min="1" max="50">
+                    </div>
+                    
+                    <button type="submit" class="btn" id="submitBtn">
+                        <i class="fas fa-play"></i> Start Research
+                    </button>
+                </form>
+            </div>
+
+            <!-- Progress Tracking -->
+            <div class="card progress-section" id="progressSection">
+                <h2><i class="fas fa-chart-line"></i> Research Progress</h2>
+                <div id="statusBadge" class="status-badge status-pending">Pending</div>
+                
+                <div class="agent-progress">
+                    <div class="agent-header">
+                        <div class="agent-icon search-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="agent-name">Search Agent</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="searchProgress"></div>
+                    </div>
+                </div>
+                
+                <div class="agent-progress">
+                    <div class="agent-header">
+                        <div class="agent-icon extract-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="agent-name">Extract Agent</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="extractProgress"></div>
+                    </div>
+                </div>
+                
+                <div class="agent-progress">
+                    <div class="agent-header">
+                        <div class="agent-icon compare-icon">
+                            <i class="fas fa-balance-scale"></i>
+                        </div>
+                        <div class="agent-name">Compare Agent</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="compareProgress"></div>
+                    </div>
+                </div>
+                
+                <div class="agent-progress">
+                    <div class="agent-header">
+                        <div class="agent-icon summarize-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div class="agent-name">Summarize Agent</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="summarizeProgress"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section -->
+        <div class="results-section" id="resultsSection">
+            <div class="result-card">
+                <h2><i class="fas fa-chart-bar"></i> Research Results</h2>
+                
+                <div class="export-buttons">
+                    <button class="export-btn" onclick="exportResults('json')">
+                        <i class="fas fa-download"></i> Export JSON
+                    </button>
+                    <button class="export-btn" onclick="exportResults('markdown')">
+                        <i class="fas fa-file-alt"></i> Export Markdown
+                    </button>
+                </div>
+                
+                <div class="result-section">
+                    <h3><i class="fas fa-file-alt"></i> Executive Summary</h3>
+                    <div id="executiveSummary"></div>
+                </div>
+                
+                <div class="result-section">
+                    <h3><i class="fas fa-lightbulb"></i> Key Findings</h3>
+                    <div id="keyFindings"></div>
+                </div>
+                
+                <div class="result-section">
+                    <h3><i class="fas fa-tasks"></i> Policy Recommendations</h3>
+                    <div id="recommendations"></div>
+                </div>
+                
+                <div class="result-section">
+                    <h3><i class="fas fa-search"></i> Documents Analyzed</h3>
+                    <div id="documents"></div>
+                </div>
+                
+                <div class="result-section">
+                    <h3><i class="fas fa-gavel"></i> Extracted Clauses</h3>
+                    <div id="clauses"></div>
+                </div>
+                
+                <div class="result-section">
+                    <h3><i class="fas fa-balance-scale"></i> Comparative Analysis</h3>
+                    <div id="comparisons"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQueryId = null;
+        let progressInterval = null;
+
+        document.getElementById('researchForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+            
+            try {
+                const formData = {
+                    query: document.getElementById('query').value,
+                    regions: document.getElementById('regions').value ? 
+                        document.getElementById('regions').value.split(',').map(r => r.trim()) : null,
+                    document_types: document.getElementById('documentTypes').value ? 
+                        document.getElementById('documentTypes').value.split(',').map(d => d.trim()) : null,
+                    max_documents: parseInt(document.getElementById('maxDocuments').value)
+                };
+                
+                const response = await fetch('/api/research', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok) {
+                    currentQueryId = result.query_id;
+                    showProgress();
+                    startProgressTracking();
+                    showMessage('Research query submitted successfully! Processing will take 5-10 minutes.', 'success');
+                } else {
+                    throw new Error(result.detail || 'Failed to submit query');
+                }
+                
+            } catch (error) {
+                showMessage(`Error: ${error.message}`, 'error');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-play"></i> Start Research';
+            }
+        });
+
+        function showProgress() {
+            document.getElementById('progressSection').style.display = 'block';
+            document.getElementById('resultsSection').style.display = 'none';
+        }
+
+        function startProgressTracking() {
+            if (progressInterval) {
+                clearInterval(progressInterval);
+            }
+            
+            progressInterval = setInterval(async () => {
+                if (!currentQueryId) return;
+                
+                try {
+                    const response = await fetch(`/api/research/${currentQueryId}/status`);
+                    const status = await response.json();
+                    
+                    updateProgress(status);
+                    
+                    if (status.status === 'completed') {
+                        clearInterval(progressInterval);
+                        await loadResults();
+                    } else if (status.status === 'failed') {
+                        clearInterval(progressInterval);
+                        showMessage(`Research failed: ${status.error_message}`, 'error');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error checking progress:', error);
+                }
+            }, 2000);
+        }
+
+        function updateProgress(status) {
+            const progress = status.progress || {};
+            const statusBadge = document.getElementById('statusBadge');
+            
+            // Update status badge
+            statusBadge.className = `status-badge status-${status.status}`;
+            statusBadge.textContent = status.status.charAt(0).toUpperCase() + status.status.slice(1);
+            
+            // Update progress bars
+            document.getElementById('searchProgress').style.width = `${(progress.search_agent || 0) * 100}%`;
+            document.getElementById('extractProgress').style.width = `${(progress.extract_agent || 0) * 100}%`;
+            document.getElementById('compareProgress').style.width = `${(progress.compare_agent || 0) * 100}%`;
+            document.getElementById('summarizeProgress').style.width = `${(progress.summarize_agent || 0) * 100}%`;
+        }
+
+        async function loadResults() {
+            try {
+                const response = await fetch(`/api/research/${currentQueryId}`);
+                const result = await response.json();
+                
+                displayResults(result);
+                showMessage('Research completed successfully!', 'success');
+                
+            } catch (error) {
+                showMessage(`Error loading results: ${error.message}`, 'error');
+            }
+        }
+
+        function displayResults(result) {
+            document.getElementById('resultsSection').style.display = 'block';
+            
+            // Executive Summary
+            document.getElementById('executiveSummary').innerHTML = 
+                `<p>${result.summary.executive_summary}</p>`;
+            
+            // Key Findings
+            const findingsHtml = result.summary.key_findings.map(finding => 
+                `<div class="document-item"><p>${finding}</p></div>`
+            ).join('');
+            document.getElementById('keyFindings').innerHTML = findingsHtml;
+            
+            // Recommendations
+            const recommendationsHtml = result.summary.recommendations.map(rec => 
+                `<div class="document-item"><p>${rec}</p></div>`
+            ).join('');
+            document.getElementById('recommendations').innerHTML = recommendationsHtml;
+            
+            // Documents
+            const documentsHtml = result.documents.map(doc => 
+                `<div class="document-item">
+                    <div class="document-title">${doc.title}</div>
+                    <div class="document-meta">${doc.source} - ${doc.region}</div>
+                </div>`
+            ).join('');
+            document.getElementById('documents').innerHTML = documentsHtml;
+            
+            // Clauses
+            const clausesHtml = result.extracted_clauses.map(clause => 
+                `<div class="clause-item">
+                    <div class="clause-text">${clause.clause_text}</div>
+                    <div class="clause-meta">${clause.topic} - ${clause.jurisdiction} (${clause.clause_type})</div>
+                </div>`
+            ).join('');
+            document.getElementById('clauses').innerHTML = clausesHtml;
+            
+            // Comparisons
+            const comparisonsHtml = result.comparisons.map(comp => 
+                `<div class="comparison-item">
+                    <div class="comparison-topic">${comp.topic}</div>
+                    <div class="comparison-details">
+                        <strong>Jurisdictions:</strong> ${comp.jurisdictions_compared.join(', ')}<br>
+                        <strong>Similarity Score:</strong> ${comp.comparison_score.toFixed(2)}<br>
+                        ${comp.similarities.length > 0 ? `<strong>Similarities:</strong> ${comp.similarities.length} found<br>` : ''}
+                        ${comp.differences.length > 0 ? `<strong>Differences:</strong> ${comp.differences.length} found<br>` : ''}
+                        ${comp.gaps.length > 0 ? `<strong>Gaps:</strong> ${comp.gaps.length} identified` : ''}
+                    </div>
+                </div>`
+            ).join('');
+            document.getElementById('comparisons').innerHTML = comparisonsHtml;
+        }
+
+        async function exportResults(format) {
+            if (!currentQueryId) return;
+            
+            try {
+                const response = await fetch(`/api/research/${currentQueryId}/export?format=${format}`);
+                
+                if (format === 'json') {
+                    const data = await response.json();
+                    downloadFile(JSON.stringify(data, null, 2), `research_result_${currentQueryId}.json`, 'application/json');
+                } else {
+                    const text = await response.text();
+                    downloadFile(text, `research_result_${currentQueryId}.md`, 'text/markdown');
+                }
+                
+            } catch (error) {
+                showMessage(`Error exporting results: ${error.message}`, 'error');
+            }
+        }
+
+        function downloadFile(content, filename, contentType) {
+            const blob = new Blob([content], { type: contentType });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+
+        function showMessage(message, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = type === 'error' ? 'error-message' : 'success-message';
+            messageDiv.textContent = message;
+            
+            const container = document.querySelector('.container');
+            container.insertBefore(messageDiv, container.firstChild);
+            
+            setTimeout(() => {
+                messageDiv.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html> 
